@@ -7,6 +7,8 @@ as a lib.  Removes the limitation of Vista+ from mpw6g.
 I honestly don't see much use for this other that situations when linking to pthreads-w32 has
 problems (like msvc x64 linking of mingw libs, if you are doing this add -D_SYSCRT to the cflags).
 
+Speed is identical to pthreads-w32 (it's not crippled in that sense).
+
 To Compile (same as mpw6g):
 
 CROSS_PREFIX=x86_64-w64-mingw32-
