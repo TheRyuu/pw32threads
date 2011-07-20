@@ -1,13 +1,14 @@
-Crippled Pthreads - A pthreads wrapper for w32threads 
+pw32threads - A pthreads wrapper for w32threads 
 Inspired by mpw6g.
 
 Takes the pthreads wrapper for w32threads from x264 and makes it a little more generic to allow use 
 as a lib.  Removes the limitation of Vista+ from mpw6g.
 
 I honestly don't see much use for this other that situations when linking to pthreads-w32 has
-problems (like msvc x64 linking of mingw libs, if you are doing this add -D_SYSCRT to the cflags).
+problems (like msvc x64 linking of mingw static libs, if you are doing this add -D_SYSCRT to 
+the cflags).
 
-Speed is identical to pthreads-w32 (it's not crippled in that sense).
+Speed is identical to pthreads-w32.
 
 To Compile (same as mpw6g):
 
