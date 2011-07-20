@@ -1,0 +1,18 @@
+Crippled Pthreads - A pthreads wrapper for w32threads 
+Inspired by mpw6g.
+
+Takes the pthreads wrapper for w32threads from x264 and makes it a little more generic to allow use 
+as a lib.  Removes the limitation of Vista+ from mpw6g.
+
+I honestly don't see much use for this other that situations when linking to pthreads-w32 has
+problems (like msvc x64 linking of mingw libs, if you are doing this add -D_SYSCRT to the cflags).
+
+To Compile (same as mpw6g):
+
+CROSS_PREFIX=x86_64-w64-mingw32-
+INSTALL_PREFIX=/mingw
+all:
+    $(CROSS_PREFIX)gcc -std=c99 -o pthread.o -c pthread.c -Wall -O2
+    $(CROSS_PREFIX)ar cru libpthread.a pthread.o
+    cp libpthread.a $(INSTALL_PREFIX)/lib
+    cp pthread.h $(INSTALL_PREFIX)/include
