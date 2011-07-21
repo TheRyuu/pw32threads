@@ -8,6 +8,7 @@ I honestly don't see much use for this other that situations when linking to pth
 problems (like msvc x64 linking of mingw static libs, if you are doing this add -D_SYSCRT to 
 the cflags).
 
+Because w32threads from x264 is gpl this too much be gpl.
 If you would like this relicensed to lgpl contact me.
 
 Speed is identical to pthreads-w32.
