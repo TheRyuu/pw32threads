@@ -24,8 +24,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-typedef struct
-{
+typedef struct {
     void *handle;
     void *(*func)( void* arg );
     void *arg;
@@ -40,33 +39,32 @@ typedef CRITICAL_SECTION pthread_mutex_t;
 
 /* This is the CONDITIONAL_VARIABLE typedef for using Window's native conditional variables on kernels 6.0+.
  * MinGW does not currently have this typedef. */
-typedef struct
-{
+typedef struct {
     void *ptr;
 } pthread_cond_t;
 #define pthread_condattr_t int
 
-int pthread_create( pthread_t *thread, const pthread_attr_t *attr,
-                         void *(*start_routine)( void* ), void *arg );
-int pthread_join( pthread_t thread, void **value_ptr );
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
+                         void *(*start_routine)( void* ), void *arg);
+int pthread_join(pthread_t thread, void **value_ptr);
 
-int pthread_mutex_init( pthread_mutex_t *mutex, const pthread_mutexattr_t *attr );
-int pthread_mutex_destroy( pthread_mutex_t *mutex );
-int pthread_mutex_lock( pthread_mutex_t *mutex );
-int pthread_mutex_unlock( pthread_mutex_t *mutex );
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr);
+int pthread_mutex_destroy(pthread_mutex_t *mutex);
+int pthread_mutex_lock(pthread_mutex_t *mutex);
+int pthread_mutex_unlock(pthread_mutex_t *mutex);
 
-int pthread_cond_init( pthread_cond_t *cond, const pthread_condattr_t *attr );
-int pthread_cond_destroy( pthread_cond_t *cond );
-int pthread_cond_broadcast( pthread_cond_t *cond );
-int pthread_cond_wait( pthread_cond_t *cond, pthread_mutex_t *mutex );
-int pthread_cond_signal( pthread_cond_t *cond );
+int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr);
+int pthread_cond_destroy(pthread_cond_t *cond);
+int pthread_cond_broadcast(pthread_cond_t *cond);
+int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);
+int pthread_cond_signal(pthread_cond_t *cond);
 
 #define pthread_attr_init(a) 0
 #define pthread_attr_destroy(a) 0
 
-//int  win32_threading_init( void );
-//void win32_threading_destroy( void );
+//int  win32_threading_init(void);
+//void win32_threading_destroy(void);
 
-int pthread_num_processors_np( void );
+int pthread_num_processors_np(void);
 
 #endif
