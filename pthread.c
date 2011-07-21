@@ -19,6 +19,7 @@
  *****************************************************************************/
 
 #include "pthread.h"
+#include <stdlib.h>
 #include <process.h>
 
 /* number of times to spin a thread about to block on a locked mutex before retrying and sleeping if still locked */
