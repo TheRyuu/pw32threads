@@ -46,21 +46,24 @@ typedef struct {
 static win32thread_control_t thread_control;
 
 /* _beginthreadex requires that the start routine is __stdcall */
-static unsigned __stdcall win32thread_worker(void *arg) {
+static unsigned __stdcall win32thread_worker(void *arg)
+{
     pthread_t *h = arg;
     h->ret = h->func(h->arg);
     return 0;
 }
 
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr,
-                         void *(*start_routine)( void* ), void *arg) {
+                         void *(*start_routine)( void* ), void *arg)
+{
     thread->func   = start_routine;
     thread->arg    = arg;
     thread->handle = (void*)_beginthreadex(NULL, 0, win32thread_worker, thread, 0, NULL);
     return !thread->handle;
 }
 
-int pthread_join(pthread_t thread, void **value_ptr) {
+int pthread_join(pthread_t thread, void **value_ptr)
+{
     DWORD ret = WaitForSingleObject(thread.handle, INFINITE);
     if (ret != WAIT_OBJECT_0)
         return -1;
@@ -70,16 +73,19 @@ int pthread_join(pthread_t thread, void **value_ptr) {
     return 0;
 }
 
-int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) {
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr)
+{
     return !InitializeCriticalSectionAndSpinCount(mutex, SPIN_COUNT);
 }
 
-int pthread_mutex_destroy(pthread_mutex_t *mutex) {
+int pthread_mutex_destroy(pthread_mutex_t *mutex)
+{
     DeleteCriticalSection(mutex);
     return 0;
 }
 
-int pthread_mutex_lock(pthread_mutex_t *mutex) {
+int pthread_mutex_lock(pthread_mutex_t *mutex)
+{
     static pthread_mutex_t init = PTHREAD_MUTEX_INITIALIZER;
     if (!memcmp( mutex, &init, sizeof(pthread_mutex_t)))
         *mutex = thread_control.static_mutex;
@@ -87,7 +93,8 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
     return 0;
 }
 
-int pthread_mutex_unlock(pthread_mutex_t *mutex) {
+int pthread_mutex_unlock(pthread_mutex_t *mutex)
+{
     LeaveCriticalSection(mutex);
     return 0;
 }
@@ -102,7 +109,8 @@ typedef struct {
     int is_broadcast;
 } win32_cond_t;
 
-int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
+int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr)
+{
     if (thread_control.cond_init) {
         thread_control.cond_init(cond);
         return 0;
@@ -129,7 +137,8 @@ int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
     return 0;
 }
 
-int pthread_cond_destroy(pthread_cond_t *cond) {
+int pthread_cond_destroy(pthread_cond_t *cond)
+{
     /* native condition variables do not destroy */
     if (thread_control.cond_init)
         return 0;
@@ -145,7 +154,8 @@ int pthread_cond_destroy(pthread_cond_t *cond) {
     return 0;
 }
 
-int pthread_cond_broadcast( pthread_cond_t *cond ) {
+int pthread_cond_broadcast( pthread_cond_t *cond )
+{
     if (thread_control.cond_broadcast) {
         thread_control.cond_broadcast(cond);
         return 0;
@@ -172,7 +182,8 @@ int pthread_cond_broadcast( pthread_cond_t *cond ) {
     return pthread_mutex_unlock(&win32_cond->mtx_broadcast);
 }
 
-int pthread_cond_signal( pthread_cond_t *cond ) {
+int pthread_cond_signal( pthread_cond_t *cond )
+{
     if (thread_control.cond_signal) {
         thread_control.cond_signal( cond );
         return 0;
@@ -189,7 +200,8 @@ int pthread_cond_signal( pthread_cond_t *cond ) {
     return 0;
 }
 
-int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
+int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
+{
     if (thread_control.cond_wait)
         return !thread_control.cond_wait(cond, mutex, INFINITE);
 
@@ -219,7 +231,8 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
     return pthread_mutex_lock(mutex);
 }
 
-int win32_threading_init(void) {
+int win32_threading_init(void)
+{
     /* find function pointers to API functions, if they exist */
     HANDLE kernel_dll = GetModuleHandle(TEXT("kernel32.dll"));
     thread_control.cond_init = (void*)GetProcAddress(kernel_dll, "InitializeConditionVariable");
@@ -232,12 +245,14 @@ int win32_threading_init(void) {
     return pthread_mutex_init(&thread_control.static_mutex, NULL);
 }
 
-void win32_threading_destroy(void) {
+void win32_threading_destroy(void)
+{
     pthread_mutex_destroy( &thread_control.static_mutex );
     memset( &thread_control, 0, sizeof(win32thread_control_t) );
 }
 
-int pthread_num_processors_np() {
+int pthread_num_processors_np()
+{
     DWORD_PTR system_cpus, process_cpus = 0;
     int cpus = 0;
 
@@ -262,11 +277,13 @@ int pthread_num_processors_np() {
     return cpus ? cpus : 1;
 }
 
-static void on_process_init(void) {
+static void on_process_init(void)
+{
     win32_threading_init();
 }
 
-static void on_process_exit(void) {
+static void on_process_exit(void)
+{
     win32_threading_destroy();
 }
 
